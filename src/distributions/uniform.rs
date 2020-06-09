@@ -321,7 +321,7 @@ where Borrowed: SampleUniform
 ///
 /// For simplicity, we use the same generic struct `UniformInt<X>` for all
 /// integer types `X`. This gives us only one field type, `X`; to store unsigned
-/// values of this size, we take use the fact that these conversions are no-ops.
+/// values of this size, we use the fact that these conversions are no-ops.
 ///
 /// For a closed range, the number of possible numbers we should generate is
 /// `range = (high - low + 1)`. To avoid bias, we must ensure that the size of
@@ -438,18 +438,9 @@ macro_rules! uniform_int_impl {
                 let high = *high_b.borrow();
                 assert!(low < high, "UniformSampler::sample_single: low >= high");
                 let range = high.wrapping_sub(low) as $unsigned as $u_large;
-                let zone = if ::core::$unsigned::MAX <= ::core::u16::MAX as $unsigned {
-                    // Using a modulus is faster than the approximation for
-                    // i8 and i16. I suppose we trade the cost of one
-                    // modulus for near-perfect branch prediction.
-                    let unsigned_max: $u_large = ::core::$u_large::MAX;
-                    let ints_to_reject = (unsigned_max - range + 1) % range;
-                    unsigned_max - ints_to_reject
-                } else {
-                    // conservative but fast approximation. `- 1` is necessary to allow the
-                    // same comparison without bias.
-                    (range << range.leading_zeros()).wrapping_sub(1)
-                };
+                let unsigned_max = ::core::$u_large::MAX;
+                let ints_to_reject = (unsigned_max - range + 1) % range;
+                let zone = unsigned_max - ints_to_reject;
 
                 loop {
                     let v: $u_large = rng.gen();
