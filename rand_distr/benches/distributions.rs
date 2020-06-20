@@ -231,33 +231,7 @@ distr_int!(distr_weighted_alias_method_u32, usize, weighted::alias_method::Weigh
 distr_int!(distr_weighted_alias_method_f64, usize, weighted::alias_method::WeightedIndex::new(vec![1.0f64, 0.001, 1.0/3.0, 4.01, 0.0, 3.3, 22.0, 0.001]).unwrap());
 distr_int!(distr_weighted_alias_method_large_set, usize, weighted::alias_method::WeightedIndex::new((0..10000).rev().chain(1..10001).collect()).unwrap());
 
-// construct and sample from a range
-macro_rules! gen_range_int {
-    ($fnn:ident, $ty:ident, $low:expr, $high:expr) => {
-        #[bench]
-        fn $fnn(b: &mut Bencher) {
-            let mut rng = Pcg64Mcg::from_entropy();
 
-            b.iter(|| {
-                let mut high = $high;
-                let mut accum: $ty = 0;
-                for _ in 0..RAND_BENCH_N {
-                    accum = accum.wrapping_add(rng.gen_range($low, high));
-                    // force recalculation of range each time
-                    high = high.wrapping_add(1) & std::$ty::MAX;
-                }
-                accum
-            });
-            b.bytes = size_of::<$ty>() as u64 * RAND_BENCH_N;
-        }
-    };
-}
-
-gen_range_int!(gen_range_i8, i8, -20i8, 100);
-gen_range_int!(gen_range_i16, i16, -500i16, 2000);
-gen_range_int!(gen_range_i32, i32, -200_000_000i32, 800_000_000);
-gen_range_int!(gen_range_i64, i64, 3i64, 123_456_789_123);
-gen_range_int!(gen_range_i128, i128, -12345678901234i128, 123_456_789_123_456_789);
 
 // construct and sample from a floating-point range
 macro_rules! gen_range_float {
