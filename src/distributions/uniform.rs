@@ -328,9 +328,6 @@ where Borrowed: SampleUniform
 /// our sample space, `zone`, is a multiple of `range`; other values must be
 /// rejected (by replacing with a new random sample).
 ///
-/// As a special case, we use `range = 0` to represent the full range of the
-/// result type (i.e. for `new_inclusive($ty::MIN, $ty::MAX)`).
-///
 /// The optimum `zone` is the largest product of `range` which fits in our
 /// (unsigned) target type. We calculate this by calculating how many numbers we
 /// must reject: `reject = (MAX + 1) % range = (MAX - range + 1) % range`. Any (large)
@@ -346,11 +343,15 @@ where Borrowed: SampleUniform
 /// An alternative to using a modulus is widening multiply: After a widening
 /// multiply by `range`, the result is in the high word. Then comparing the low
 /// word against `zone` makes sure our distribution is uniform.
+///
+/// As a special case we use `range = 0` to represent powers of two, including 
+/// the full range of the result type (i.e. for `new_inclusive($ty::MIN, $ty::MAX)`).
+/// Since these do not need any rejection, we can sample faster using a mask.
 #[derive(Clone, Copy, Debug)]
 pub struct UniformInt<X> {
     low: X,
     range: X,
-    z: X, // either ints_to_reject or zone depending on implementation
+    mask: X, // either ints_to_reject or mask depending on implementation
 }
 
 macro_rules! uniform_int_impl {
@@ -396,18 +397,35 @@ macro_rules! uniform_int_impl {
                 let unsigned_max = ::core::$u_large::MAX;
 
                 let range = high.wrapping_sub(low).wrapping_add(1) as $unsigned;
-                let ints_to_reject = if range > 0 {
+                if range == 0 {
+                    // All values of type - return `rng.gen()` unaltered by
+                    // setting mask to all-ones.
+                    UniformInt {
+                        low: low,
+                        range: 0,
+                        mask: $unsigned::MAX as $ty,
+                    }
+                }
+                else if range.is_power_of_two() {
+                    // Powers of two can be generated uniformly by masking off
+                    // low bits of uniform `rng.gen()` result.
+                    UniformInt {
+                        low: low,
+                        range: 0,
+                        mask: (range - 1) as $ty,
+                    }
+                }
+                else {
+                    // Calculate the rejection range since that fits in the
+                    // type.
                     let range = $u_large::from(range);
-                    (unsigned_max - range + 1) % range
-                } else {
-                    0
-                };
-
-                UniformInt {
-                    low: low,
-                    // These are really $unsigned values, but store as $ty:
-                    range: range as $ty,
-                    z: ints_to_reject as $unsigned as $ty,
+                    let ints_to_reject = (unsigned_max - range + 1) % range;
+                    UniformInt {
+                        low: low,
+                        // These are really $unsigned values, but store as $ty:
+                        range: range as $ty,
+                        mask: ints_to_reject as $unsigned as $ty,
+                    }
                 }
             }
 
@@ -415,7 +433,7 @@ macro_rules! uniform_int_impl {
                 let range = self.range as $unsigned as $u_large;
                 if range > 0 {
                     let unsigned_max = ::core::$u_large::MAX;
-                    let zone = unsigned_max - (self.z as $unsigned as $u_large);
+                    let zone = unsigned_max - (self.mask as $unsigned as $u_large);
                     loop {
                         let v: $u_large = rng.gen();
                         let (hi, lo) = v.wmul(range);
@@ -423,9 +441,11 @@ macro_rules! uniform_int_impl {
                             return self.low.wrapping_add(hi as $ty);
                         }
                     }
-                } else {
-                    // Sample from the entire integer range.
-                    rng.gen()
+                }
+                else {
+                    let v: $u_large = rng.gen();
+                    let i = v & (self.mask as $unsigned as $u_large);
+                    self.low.wrapping_add(i as $ty)
                 }
             }
 
