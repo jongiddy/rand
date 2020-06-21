@@ -460,12 +460,17 @@ macro_rules! uniform_int_impl {
                 let range = high.wrapping_sub(low) as $unsigned as $u_large;
                 let zone = if ::core::$unsigned::MAX <= ::core::u16::MAX as $unsigned {
                     // Using a modulus is faster than the approximation for
-                    // i8 and i16. I suppose we trade the cost of one
-                    // modulus for near-perfect branch prediction.
+                    // i8 and i16 and mixed for i32.
                     let unsigned_max: $u_large = ::core::$u_large::MAX;
                     let ints_to_reject = (unsigned_max - range + 1) % range;
                     unsigned_max - ints_to_reject
                 } else {
+                    // optimize powers of two
+                    if range.is_power_of_two() {
+                        let v: $u_large = rng.gen();
+                        let i = v & (range - 1);
+                        return low.wrapping_add(i as $ty);
+                    }
                     // conservative but fast approximation. `- 1` is necessary to allow the
                     // same comparison without bias.
                     (range << range.leading_zeros()).wrapping_sub(1)
