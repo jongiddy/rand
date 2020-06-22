@@ -458,7 +458,7 @@ macro_rules! uniform_int_impl {
                 let high = *high_b.borrow();
                 assert!(low < high, "UniformSampler::sample_single: low >= high");
                 let range = high.wrapping_sub(low) as $unsigned as $u_large;
-                let zone = if ::core::$unsigned::MAX <= ::core::u16::MAX as $unsigned {
+                let zone = if ::core::$unsigned::MAX <= ::core::u32::MAX as $unsigned {
                     // Using a modulus is faster than the approximation for
                     // i8 and i16 and mixed for i32.
                     let unsigned_max: $u_large = ::core::$u_large::MAX;
