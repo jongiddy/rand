@@ -1,5 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `rand_distr/src/gamma.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>gamma.rs - source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled ><script id="default-settings"></script><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="https://www.rust-lang.org/favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../rand_distr/index.html'><div class='logo-container'><img src='https://www.rust-lang.org/logos/rust-logo-128x128-blk.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices" role="menu"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" class="help-button">?</button>
-                <a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `rand_distr&#x2F;src&#x2F;gamma.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>gamma.rs - source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../storage.js"></script><script src="../../crates.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="https:&#x2F;&#x2F;www.rust-lang.org&#x2F;favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../rand_distr/index.html'><div class='logo-container rust-logo'><img src='https:&#x2F;&#x2F;www.rust-lang.org&#x2F;logos&#x2F;rust-logo-128x128-blk.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input"name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../wheel.svg"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -788,7 +787,32 @@
 <span id="787">787</span>
 <span id="788">788</span>
 <span id="789">789</span>
-</pre><div class="example-wrap"><pre class="rust ">
+<span id="790">790</span>
+<span id="791">791</span>
+<span id="792">792</span>
+<span id="793">793</span>
+<span id="794">794</span>
+<span id="795">795</span>
+<span id="796">796</span>
+<span id="797">797</span>
+<span id="798">798</span>
+<span id="799">799</span>
+<span id="800">800</span>
+<span id="801">801</span>
+<span id="802">802</span>
+<span id="803">803</span>
+<span id="804">804</span>
+<span id="805">805</span>
+<span id="806">806</span>
+<span id="807">807</span>
+<span id="808">808</span>
+<span id="809">809</span>
+<span id="810">810</span>
+<span id="811">811</span>
+<span id="812">812</span>
+<span id="813">813</span>
+<span id="814">814</span>
+</pre><pre class="rust">
 <span class="comment">// Copyright 2018 Developers of the Rand project.</span>
 <span class="comment">// Copyright 2013 The Rust Project Developers.</span>
 <span class="comment">//</span>
@@ -800,14 +824,20 @@
 
 <span class="doccomment">//! The Gamma and derived distributions.</span>
 
-<span class="kw">use</span> <span class="self">self</span>::<span class="ident">ChiSquaredRepr</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="self">self</span>::<span class="ident">GammaRepr</span>::<span class="kw-2">*</span>;
+<span class="comment">// We use the variable names from the published reference, therefore this</span>
+<span class="comment">// warning is not helpful.</span>
+<span class="attribute">#![<span class="ident">allow</span>(<span class="ident">clippy::many_single_char_names</span>)]</span>
 
-<span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">normal</span>::<span class="ident">StandardNormal</span>;
-<span class="kw">use</span> <span class="ident">num_traits</span>::<span class="ident">Float</span>;
+<span class="kw">use</span> <span class="self">self</span><span class="ident">::ChiSquaredRepr</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="self">self</span><span class="ident">::GammaRepr</span>::<span class="kw-2">*</span>;
+
+<span class="kw">use</span> <span class="kw">crate</span><span class="ident">::normal::StandardNormal</span>;
+<span class="kw">use</span> <span class="ident">num_traits::Float</span>;
 <span class="kw">use</span> <span class="kw">crate</span>::{<span class="ident">Distribution</span>, <span class="ident">Exp</span>, <span class="ident">Exp1</span>, <span class="ident">Open01</span>};
-<span class="kw">use</span> <span class="ident">rand</span>::<span class="ident">Rng</span>;
-<span class="kw">use</span> <span class="ident">core</span>::<span class="ident">fmt</span>;
+<span class="kw">use</span> <span class="ident">rand::Rng</span>;
+<span class="kw">use</span> <span class="ident">core::fmt</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde1&quot;</span>)]</span>
+<span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>};
 
 <span class="doccomment">/// The Gamma distribution `Gamma(shape, scale)` distribution.</span>
 <span class="doccomment">///</span>
@@ -840,6 +870,7 @@
 <span class="doccomment">///       (September 2000), 363-372.</span>
 <span class="doccomment">///       DOI:[10.1145/358407.358414](https://doi.acm.org/10.1145/358407.358414)</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde1&quot;</span>, <span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>))]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Gamma</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>
 <span class="kw">where</span>
     <span class="ident">F</span>: <span class="ident">Float</span>,
@@ -861,20 +892,22 @@
     <span class="ident">ScaleTooLarge</span>,
 }
 
-<span class="kw">impl</span> <span class="ident">fmt</span>::<span class="ident">Display</span> <span class="kw">for</span> <span class="ident">Error</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
+<span class="kw">impl</span> <span class="ident">fmt::Display</span> <span class="kw">for</span> <span class="ident">Error</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">fmt::Result</span> {
         <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">Error</span>::<span class="ident">ShapeTooSmall</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;shape is not positive in gamma distribution&quot;</span>,
-            <span class="ident">Error</span>::<span class="ident">ScaleTooSmall</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;scale is not positive in gamma distribution&quot;</span>,
-            <span class="ident">Error</span>::<span class="ident">ScaleTooLarge</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;scale is infinity in gamma distribution&quot;</span>,
+            <span class="ident">Error::ShapeTooSmall</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;shape is not positive in gamma distribution&quot;</span>,
+            <span class="ident">Error::ScaleTooSmall</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;scale is not positive in gamma distribution&quot;</span>,
+            <span class="ident">Error::ScaleTooLarge</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;scale is infinity in gamma distribution&quot;</span>,
         })
     }
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
-<span class="kw">impl</span> <span class="ident">std</span>::<span class="ident">error</span>::<span class="ident">Error</span> <span class="kw">for</span> <span class="ident">Error</span> {}
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">doc_cfg</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)))]</span>
+<span class="kw">impl</span> <span class="ident">std::error::Error</span> <span class="kw">for</span> <span class="ident">Error</span> {}
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde1&quot;</span>, <span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>))]</span>
 <span class="kw">enum</span> <span class="ident">GammaRepr</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>
 <span class="kw">where</span>
     <span class="ident">F</span>: <span class="ident">Float</span>,
@@ -902,6 +935,7 @@
 <span class="doccomment">/// See `Gamma` for sampling from a Gamma distribution with general</span>
 <span class="doccomment">/// shape parameters.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde1&quot;</span>, <span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>))]</span>
 <span class="kw">struct</span> <span class="ident">GammaSmallShape</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>
 <span class="kw">where</span>
     <span class="ident">F</span>: <span class="ident">Float</span>,
@@ -917,6 +951,7 @@
 <span class="doccomment">/// See `Gamma` for sampling from a Gamma distribution with general</span>
 <span class="doccomment">/// shape parameters.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde1&quot;</span>, <span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>))]</span>
 <span class="kw">struct</span> <span class="ident">GammaLargeShape</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>
 <span class="kw">where</span>
     <span class="ident">F</span>: <span class="ident">Float</span>,
@@ -939,19 +974,19 @@
     <span class="doccomment">/// distribution.</span>
     <span class="attribute">#[<span class="ident">inline</span>]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">shape</span>: <span class="ident">F</span>, <span class="ident">scale</span>: <span class="ident">F</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Gamma</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="op">!</span>(<span class="ident">shape</span> <span class="op">&gt;</span> <span class="ident">F</span>::<span class="ident">zero</span>()) {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="ident">ShapeTooSmall</span>);
+        <span class="kw">if</span> <span class="op">!</span>(<span class="ident">shape</span> <span class="op">&gt;</span> <span class="ident">F::zero</span>()) {
+            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error::ShapeTooSmall</span>);
         }
-        <span class="kw">if</span> <span class="op">!</span>(<span class="ident">scale</span> <span class="op">&gt;</span> <span class="ident">F</span>::<span class="ident">zero</span>()) {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="ident">ScaleTooSmall</span>);
+        <span class="kw">if</span> <span class="op">!</span>(<span class="ident">scale</span> <span class="op">&gt;</span> <span class="ident">F::zero</span>()) {
+            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">Error::ScaleTooSmall</span>);
         }
 
-        <span class="kw">let</span> <span class="ident">repr</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">shape</span> <span class="op">=</span><span class="op">=</span> <span class="ident">F</span>::<span class="ident">one</span>() {
-            <span class="ident">One</span>(<span class="ident">Exp</span>::<span class="ident">new</span>(<span class="ident">F</span>::<span class="ident">one</span>() <span class="op">/</span> <span class="ident">scale</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">Error</span>::<span class="ident">ScaleTooLarge</span>)<span class="question-mark">?</span>)
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">shape</span> <span class="op">&lt;</span> <span class="ident">F</span>::<span class="ident">one</span>() {
-            <span class="ident">Small</span>(<span class="ident">GammaSmallShape</span>::<span class="ident">new_raw</span>(<span class="ident">shape</span>, <span class="ident">scale</span>))
+        <span class="kw">let</span> <span class="ident">repr</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">shape</span> <span class="op">=</span><span class="op">=</span> <span class="ident">F::one</span>() {
+            <span class="ident">One</span>(<span class="ident">Exp::new</span>(<span class="ident">F::one</span>() <span class="op">/</span> <span class="ident">scale</span>).<span class="ident">map_err</span>(<span class="op">|</span><span class="kw">_</span><span class="op">|</span> <span class="ident">Error::ScaleTooLarge</span>)<span class="question-mark">?</span>)
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">shape</span> <span class="op">&lt;</span> <span class="ident">F::one</span>() {
+            <span class="ident">Small</span>(<span class="ident">GammaSmallShape::new_raw</span>(<span class="ident">shape</span>, <span class="ident">scale</span>))
         } <span class="kw">else</span> {
-            <span class="ident">Large</span>(<span class="ident">GammaLargeShape</span>::<span class="ident">new_raw</span>(<span class="ident">shape</span>, <span class="ident">scale</span>))
+            <span class="ident">Large</span>(<span class="ident">GammaLargeShape::new_raw</span>(<span class="ident">shape</span>, <span class="ident">scale</span>))
         };
         <span class="prelude-val">Ok</span>(<span class="ident">Gamma</span> { <span class="ident">repr</span> })
     }
@@ -965,8 +1000,8 @@
 {
     <span class="kw">fn</span> <span class="ident">new_raw</span>(<span class="ident">shape</span>: <span class="ident">F</span>, <span class="ident">scale</span>: <span class="ident">F</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">GammaSmallShape</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span> {
         <span class="ident">GammaSmallShape</span> {
-            <span class="ident">inv_shape</span>: <span class="ident">F</span>::<span class="ident">one</span>() <span class="op">/</span> <span class="ident">shape</span>,
-            <span class="ident">large_shape</span>: <span class="ident">GammaLargeShape</span>::<span class="ident">new_raw</span>(<span class="ident">shape</span> <span class="op">+</span> <span class="ident">F</span>::<span class="ident">one</span>(), <span class="ident">scale</span>),
+            <span class="ident">inv_shape</span>: <span class="ident">F::one</span>() <span class="op">/</span> <span class="ident">shape</span>,
+            <span class="ident">large_shape</span>: <span class="ident">GammaLargeShape::new_raw</span>(<span class="ident">shape</span> <span class="op">+</span> <span class="ident">F::one</span>(), <span class="ident">scale</span>),
         }
     }
 }
@@ -978,10 +1013,10 @@
     <span class="ident">Open01</span>: <span class="ident">Distribution</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>,
 {
     <span class="kw">fn</span> <span class="ident">new_raw</span>(<span class="ident">shape</span>: <span class="ident">F</span>, <span class="ident">scale</span>: <span class="ident">F</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">GammaLargeShape</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">d</span> <span class="op">=</span> <span class="ident">shape</span> <span class="op">-</span> <span class="ident">F</span>::<span class="ident">from</span>(<span class="number">1.</span> <span class="op">/</span> <span class="number">3.</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="ident">d</span> <span class="op">=</span> <span class="ident">shape</span> <span class="op">-</span> <span class="ident">F::from</span>(<span class="number">1.</span> <span class="op">/</span> <span class="number">3.</span>).<span class="ident">unwrap</span>();
         <span class="ident">GammaLargeShape</span> {
             <span class="ident">scale</span>,
-            <span class="ident">c</span>: <span class="ident">F</span>::<span class="ident">one</span>() <span class="op">/</span> (<span class="ident">F</span>::<span class="ident">from</span>(<span class="number">9.</span>).<span class="ident">unwrap</span>() <span class="op">*</span> <span class="ident">d</span>).<span class="ident">sqrt</span>(),
+            <span class="ident">c</span>: <span class="ident">F::one</span>() <span class="op">/</span> (<span class="ident">F::from</span>(<span class="number">9.</span>).<span class="ident">unwrap</span>() <span class="op">*</span> <span class="ident">d</span>).<span class="ident">sqrt</span>(),
             <span class="ident">d</span>,
         }
     }
@@ -1024,8 +1059,8 @@
         <span class="comment">// Marsaglia &amp; Tsang method, 2000</span>
         <span class="kw">loop</span> {
             <span class="kw">let</span> <span class="ident">x</span>: <span class="ident">F</span> <span class="op">=</span> <span class="ident">rng</span>.<span class="ident">sample</span>(<span class="ident">StandardNormal</span>);
-            <span class="kw">let</span> <span class="ident">v_cbrt</span> <span class="op">=</span> <span class="ident">F</span>::<span class="ident">one</span>() <span class="op">+</span> <span class="self">self</span>.<span class="ident">c</span> <span class="op">*</span> <span class="ident">x</span>;
-            <span class="kw">if</span> <span class="ident">v_cbrt</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">F</span>::<span class="ident">zero</span>() {
+            <span class="kw">let</span> <span class="ident">v_cbrt</span> <span class="op">=</span> <span class="ident">F::one</span>() <span class="op">+</span> <span class="self">self</span>.<span class="ident">c</span> <span class="op">*</span> <span class="ident">x</span>;
+            <span class="kw">if</span> <span class="ident">v_cbrt</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">F::zero</span>() {
                 <span class="comment">// a^3 &lt;= 0 iff a &lt;= 0</span>
                 <span class="kw">continue</span>;
             }
@@ -1034,8 +1069,8 @@
             <span class="kw">let</span> <span class="ident">u</span>: <span class="ident">F</span> <span class="op">=</span> <span class="ident">rng</span>.<span class="ident">sample</span>(<span class="ident">Open01</span>);
 
             <span class="kw">let</span> <span class="ident">x_sqr</span> <span class="op">=</span> <span class="ident">x</span> <span class="op">*</span> <span class="ident">x</span>;
-            <span class="kw">if</span> <span class="ident">u</span> <span class="op">&lt;</span> <span class="ident">F</span>::<span class="ident">one</span>() <span class="op">-</span> <span class="ident">F</span>::<span class="ident">from</span>(<span class="number">0.0331</span>).<span class="ident">unwrap</span>() <span class="op">*</span> <span class="ident">x_sqr</span> <span class="op">*</span> <span class="ident">x_sqr</span>
-                <span class="op">|</span><span class="op">|</span> <span class="ident">u</span>.<span class="ident">ln</span>() <span class="op">&lt;</span> <span class="ident">F</span>::<span class="ident">from</span>(<span class="number">0.5</span>).<span class="ident">unwrap</span>() <span class="op">*</span> <span class="ident">x_sqr</span> <span class="op">+</span> <span class="self">self</span>.<span class="ident">d</span> <span class="op">*</span> (<span class="ident">F</span>::<span class="ident">one</span>() <span class="op">-</span> <span class="ident">v</span> <span class="op">+</span> <span class="ident">v</span>.<span class="ident">ln</span>())
+            <span class="kw">if</span> <span class="ident">u</span> <span class="op">&lt;</span> <span class="ident">F::one</span>() <span class="op">-</span> <span class="ident">F::from</span>(<span class="number">0.0331</span>).<span class="ident">unwrap</span>() <span class="op">*</span> <span class="ident">x_sqr</span> <span class="op">*</span> <span class="ident">x_sqr</span>
+                <span class="op">|</span><span class="op">|</span> <span class="ident">u</span>.<span class="ident">ln</span>() <span class="op">&lt;</span> <span class="ident">F::from</span>(<span class="number">0.5</span>).<span class="ident">unwrap</span>() <span class="op">*</span> <span class="ident">x_sqr</span> <span class="op">+</span> <span class="self">self</span>.<span class="ident">d</span> <span class="op">*</span> (<span class="ident">F::one</span>() <span class="op">-</span> <span class="ident">v</span> <span class="op">+</span> <span class="ident">v</span>.<span class="ident">ln</span>())
             {
                 <span class="kw">return</span> <span class="self">self</span>.<span class="ident">d</span> <span class="op">*</span> <span class="ident">v</span> <span class="op">*</span> <span class="self">self</span>.<span class="ident">scale</span>;
             }
@@ -1061,6 +1096,7 @@
 <span class="doccomment">/// println!(&quot;{} is from a χ²(11) distribution&quot;, v)</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde1&quot;</span>, <span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>))]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ChiSquared</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>
 <span class="kw">where</span>
     <span class="ident">F</span>: <span class="ident">Float</span>,
@@ -1073,15 +1109,16 @@
 
 <span class="doccomment">/// Error type returned from `ChiSquared::new` and `StudentT::new`.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde1&quot;</span>, <span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>))]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ChiSquaredError</span> {
     <span class="doccomment">/// `0.5 * k &lt;= 0` or `nan`.</span>
     <span class="ident">DoFTooSmall</span>,
 }
 
-<span class="kw">impl</span> <span class="ident">fmt</span>::<span class="ident">Display</span> <span class="kw">for</span> <span class="ident">ChiSquaredError</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
+<span class="kw">impl</span> <span class="ident">fmt::Display</span> <span class="kw">for</span> <span class="ident">ChiSquaredError</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">fmt::Result</span> {
         <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">ChiSquaredError</span>::<span class="ident">DoFTooSmall</span> <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">ChiSquaredError::DoFTooSmall</span> <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="string">&quot;degrees-of-freedom k is not positive in chi-squared distribution&quot;</span>
             }
         })
@@ -1089,9 +1126,11 @@
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
-<span class="kw">impl</span> <span class="ident">std</span>::<span class="ident">error</span>::<span class="ident">Error</span> <span class="kw">for</span> <span class="ident">ChiSquaredError</span> {}
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">doc_cfg</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)))]</span>
+<span class="kw">impl</span> <span class="ident">std::error::Error</span> <span class="kw">for</span> <span class="ident">ChiSquaredError</span> {}
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde1&quot;</span>, <span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>))]</span>
 <span class="kw">enum</span> <span class="ident">ChiSquaredRepr</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>
 <span class="kw">where</span>
     <span class="ident">F</span>: <span class="ident">Float</span>,
@@ -1116,13 +1155,13 @@
     <span class="doccomment">/// Create a new chi-squared distribution with degrees-of-freedom</span>
     <span class="doccomment">/// `k`.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">k</span>: <span class="ident">F</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">ChiSquared</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>, <span class="ident">ChiSquaredError</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">repr</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">k</span> <span class="op">=</span><span class="op">=</span> <span class="ident">F</span>::<span class="ident">one</span>() {
+        <span class="kw">let</span> <span class="ident">repr</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">k</span> <span class="op">=</span><span class="op">=</span> <span class="ident">F::one</span>() {
             <span class="ident">DoFExactlyOne</span>
         } <span class="kw">else</span> {
-            <span class="kw">if</span> <span class="op">!</span>(<span class="ident">F</span>::<span class="ident">from</span>(<span class="number">0.5</span>).<span class="ident">unwrap</span>() <span class="op">*</span> <span class="ident">k</span> <span class="op">&gt;</span> <span class="ident">F</span>::<span class="ident">zero</span>()) {
-                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">ChiSquaredError</span>::<span class="ident">DoFTooSmall</span>);
+            <span class="kw">if</span> <span class="op">!</span>(<span class="ident">F::from</span>(<span class="number">0.5</span>).<span class="ident">unwrap</span>() <span class="op">*</span> <span class="ident">k</span> <span class="op">&gt;</span> <span class="ident">F::zero</span>()) {
+                <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">ChiSquaredError::DoFTooSmall</span>);
             }
-            <span class="ident">DoFAnythingElse</span>(<span class="ident">Gamma</span>::<span class="ident">new</span>(<span class="ident">F</span>::<span class="ident">from</span>(<span class="number">0.5</span>).<span class="ident">unwrap</span>() <span class="op">*</span> <span class="ident">k</span>, <span class="ident">F</span>::<span class="ident">from</span>(<span class="number">2.0</span>).<span class="ident">unwrap</span>()).<span class="ident">unwrap</span>())
+            <span class="ident">DoFAnythingElse</span>(<span class="ident">Gamma::new</span>(<span class="ident">F::from</span>(<span class="number">0.5</span>).<span class="ident">unwrap</span>() <span class="op">*</span> <span class="ident">k</span>, <span class="ident">F::from</span>(<span class="number">2.0</span>).<span class="ident">unwrap</span>()).<span class="ident">unwrap</span>())
         };
         <span class="prelude-val">Ok</span>(<span class="ident">ChiSquared</span> { <span class="ident">repr</span> })
     }
@@ -1162,6 +1201,7 @@
 <span class="doccomment">/// println!(&quot;{} is from an F(2, 32) distribution&quot;, v)</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde1&quot;</span>, <span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>))]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">FisherF</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>
 <span class="kw">where</span>
     <span class="ident">F</span>: <span class="ident">Float</span>,
@@ -1178,6 +1218,7 @@
 
 <span class="doccomment">/// Error type returned from `FisherF::new`.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde1&quot;</span>, <span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>))]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">FisherFError</span> {
     <span class="doccomment">/// `m &lt;= 0` or `nan`.</span>
     <span class="ident">MTooSmall</span>,
@@ -1185,17 +1226,18 @@
     <span class="ident">NTooSmall</span>,
 }
 
-<span class="kw">impl</span> <span class="ident">fmt</span>::<span class="ident">Display</span> <span class="kw">for</span> <span class="ident">FisherFError</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
+<span class="kw">impl</span> <span class="ident">fmt::Display</span> <span class="kw">for</span> <span class="ident">FisherFError</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">fmt::Result</span> {
         <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">FisherFError</span>::<span class="ident">MTooSmall</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;m is not positive in Fisher F distribution&quot;</span>,
-            <span class="ident">FisherFError</span>::<span class="ident">NTooSmall</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;n is not positive in Fisher F distribution&quot;</span>,
+            <span class="ident">FisherFError::MTooSmall</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;m is not positive in Fisher F distribution&quot;</span>,
+            <span class="ident">FisherFError::NTooSmall</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;n is not positive in Fisher F distribution&quot;</span>,
         })
     }
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
-<span class="kw">impl</span> <span class="ident">std</span>::<span class="ident">error</span>::<span class="ident">Error</span> <span class="kw">for</span> <span class="ident">FisherFError</span> {}
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">doc_cfg</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)))]</span>
+<span class="kw">impl</span> <span class="ident">std::error::Error</span> <span class="kw">for</span> <span class="ident">FisherFError</span> {}
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span> <span class="ident">FisherF</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>
 <span class="kw">where</span>
@@ -1206,17 +1248,17 @@
 {
     <span class="doccomment">/// Create a new `FisherF` distribution, with the given parameter.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">m</span>: <span class="ident">F</span>, <span class="ident">n</span>: <span class="ident">F</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">FisherF</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>, <span class="ident">FisherFError</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="ident">zero</span> <span class="op">=</span> <span class="ident">F</span>::<span class="ident">zero</span>();
+        <span class="kw">let</span> <span class="ident">zero</span> <span class="op">=</span> <span class="ident">F::zero</span>();
         <span class="kw">if</span> <span class="op">!</span>(<span class="ident">m</span> <span class="op">&gt;</span> <span class="ident">zero</span>) {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">FisherFError</span>::<span class="ident">MTooSmall</span>);
+            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">FisherFError::MTooSmall</span>);
         }
         <span class="kw">if</span> <span class="op">!</span>(<span class="ident">n</span> <span class="op">&gt;</span> <span class="ident">zero</span>) {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">FisherFError</span>::<span class="ident">NTooSmall</span>);
+            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">FisherFError::NTooSmall</span>);
         }
 
         <span class="prelude-val">Ok</span>(<span class="ident">FisherF</span> {
-            <span class="ident">numer</span>: <span class="ident">ChiSquared</span>::<span class="ident">new</span>(<span class="ident">m</span>).<span class="ident">unwrap</span>(),
-            <span class="ident">denom</span>: <span class="ident">ChiSquared</span>::<span class="ident">new</span>(<span class="ident">n</span>).<span class="ident">unwrap</span>(),
+            <span class="ident">numer</span>: <span class="ident">ChiSquared::new</span>(<span class="ident">m</span>).<span class="ident">unwrap</span>(),
+            <span class="ident">denom</span>: <span class="ident">ChiSquared::new</span>(<span class="ident">n</span>).<span class="ident">unwrap</span>(),
             <span class="ident">dof_ratio</span>: <span class="ident">n</span> <span class="op">/</span> <span class="ident">m</span>,
         })
     }
@@ -1246,6 +1288,7 @@
 <span class="doccomment">/// println!(&quot;{} is from a t(11) distribution&quot;, v)</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde1&quot;</span>, <span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>))]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StudentT</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>
 <span class="kw">where</span>
     <span class="ident">F</span>: <span class="ident">Float</span>,
@@ -1268,7 +1311,7 @@
     <span class="doccomment">/// freedom.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">n</span>: <span class="ident">F</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">StudentT</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>, <span class="ident">ChiSquaredError</span><span class="op">&gt;</span> {
         <span class="prelude-val">Ok</span>(<span class="ident">StudentT</span> {
-            <span class="ident">chi</span>: <span class="ident">ChiSquared</span>::<span class="ident">new</span>(<span class="ident">n</span>)<span class="question-mark">?</span>,
+            <span class="ident">chi</span>: <span class="ident">ChiSquared::new</span>(<span class="ident">n</span>)<span class="question-mark">?</span>,
             <span class="ident">dof</span>: <span class="ident">n</span>,
         })
     }
@@ -1295,6 +1338,7 @@
 <span class="doccomment">/// Communications of the ACM 21, 317-322.</span>
 <span class="doccomment">/// https://doi.org/10.1145/359460.359482</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde1&quot;</span>, <span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>))]</span>
 <span class="kw">enum</span> <span class="ident">BetaAlgorithm</span><span class="op">&lt;</span><span class="ident">N</span><span class="op">&gt;</span> {
     <span class="ident">BB</span>(<span class="ident">BB</span><span class="op">&lt;</span><span class="ident">N</span><span class="op">&gt;</span>),
     <span class="ident">BC</span>(<span class="ident">BC</span><span class="op">&lt;</span><span class="ident">N</span><span class="op">&gt;</span>),
@@ -1302,6 +1346,7 @@
 
 <span class="doccomment">/// Algorithm BB for `min(alpha, beta) &gt; 1`.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde1&quot;</span>, <span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>))]</span>
 <span class="kw">struct</span> <span class="ident">BB</span><span class="op">&lt;</span><span class="ident">N</span><span class="op">&gt;</span> {
     <span class="ident">alpha</span>: <span class="ident">N</span>,
     <span class="ident">beta</span>: <span class="ident">N</span>,
@@ -1310,6 +1355,7 @@
 
 <span class="doccomment">/// Algorithm BC for `min(alpha, beta) &lt;= 1`.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde1&quot;</span>, <span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>))]</span>
 <span class="kw">struct</span> <span class="ident">BC</span><span class="op">&lt;</span><span class="ident">N</span><span class="op">&gt;</span> {
     <span class="ident">alpha</span>: <span class="ident">N</span>,
     <span class="ident">beta</span>: <span class="ident">N</span>,
@@ -1330,6 +1376,7 @@
 <span class="doccomment">/// println!(&quot;{} is from a Beta(2, 5) distribution&quot;, v);</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde1&quot;</span>, <span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>))]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Beta</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>
 <span class="kw">where</span>
     <span class="ident">F</span>: <span class="ident">Float</span>,
@@ -1341,6 +1388,7 @@
 
 <span class="doccomment">/// Error type returned from `Beta::new`.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;serde1&quot;</span>, <span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>))]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">BetaError</span> {
     <span class="doccomment">/// `alpha &lt;= 0` or `nan`.</span>
     <span class="ident">AlphaTooSmall</span>,
@@ -1348,17 +1396,18 @@
     <span class="ident">BetaTooSmall</span>,
 }
 
-<span class="kw">impl</span> <span class="ident">fmt</span>::<span class="ident">Display</span> <span class="kw">for</span> <span class="ident">BetaError</span> {
-    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
+<span class="kw">impl</span> <span class="ident">fmt::Display</span> <span class="kw">for</span> <span class="ident">BetaError</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt::Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">fmt::Result</span> {
         <span class="ident">f</span>.<span class="ident">write_str</span>(<span class="kw">match</span> <span class="self">self</span> {
-            <span class="ident">BetaError</span>::<span class="ident">AlphaTooSmall</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;alpha is not positive in beta distribution&quot;</span>,
-            <span class="ident">BetaError</span>::<span class="ident">BetaTooSmall</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;beta is not positive in beta distribution&quot;</span>,
+            <span class="ident">BetaError::AlphaTooSmall</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;alpha is not positive in beta distribution&quot;</span>,
+            <span class="ident">BetaError::BetaTooSmall</span> <span class="op">=</span><span class="op">&gt;</span> <span class="string">&quot;beta is not positive in beta distribution&quot;</span>,
         })
     }
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
-<span class="kw">impl</span> <span class="ident">std</span>::<span class="ident">error</span>::<span class="ident">Error</span> <span class="kw">for</span> <span class="ident">BetaError</span> {}
+<span class="attribute">#[<span class="ident">cfg_attr</span>(<span class="ident">doc_cfg</span>, <span class="ident">doc</span>(<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)))]</span>
+<span class="kw">impl</span> <span class="ident">std::error::Error</span> <span class="kw">for</span> <span class="ident">BetaError</span> {}
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span> <span class="ident">Beta</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>
 <span class="kw">where</span>
@@ -1368,11 +1417,11 @@
     <span class="doccomment">/// Construct an object representing the `Beta(alpha, beta)`</span>
     <span class="doccomment">/// distribution.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">alpha</span>: <span class="ident">F</span>, <span class="ident">beta</span>: <span class="ident">F</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Beta</span><span class="op">&lt;</span><span class="ident">F</span><span class="op">&gt;</span>, <span class="ident">BetaError</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="op">!</span>(<span class="ident">alpha</span> <span class="op">&gt;</span> <span class="ident">F</span>::<span class="ident">zero</span>()) {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BetaError</span>::<span class="ident">AlphaTooSmall</span>);
+        <span class="kw">if</span> <span class="op">!</span>(<span class="ident">alpha</span> <span class="op">&gt;</span> <span class="ident">F::zero</span>()) {
+            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BetaError::AlphaTooSmall</span>);
         }
-        <span class="kw">if</span> <span class="op">!</span>(<span class="ident">beta</span> <span class="op">&gt;</span> <span class="ident">F</span>::<span class="ident">zero</span>()) {
-            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BetaError</span>::<span class="ident">BetaTooSmall</span>);
+        <span class="kw">if</span> <span class="op">!</span>(<span class="ident">beta</span> <span class="op">&gt;</span> <span class="ident">F::zero</span>()) {
+            <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">BetaError::BetaTooSmall</span>);
         }
         <span class="comment">// From now on, we use the notation from the reference,</span>
         <span class="comment">// i.e. `alpha` and `beta` are renamed to `a0` and `b0`.</span>
@@ -1382,16 +1431,16 @@
         } <span class="kw">else</span> {
             (<span class="ident">b0</span>, <span class="ident">a0</span>, <span class="bool-val">true</span>)
         };
-        <span class="kw">if</span> <span class="ident">a</span> <span class="op">&gt;</span> <span class="ident">F</span>::<span class="ident">one</span>() {
+        <span class="kw">if</span> <span class="ident">a</span> <span class="op">&gt;</span> <span class="ident">F::one</span>() {
             <span class="comment">// Algorithm BB</span>
             <span class="kw">let</span> <span class="ident">alpha</span> <span class="op">=</span> <span class="ident">a</span> <span class="op">+</span> <span class="ident">b</span>;
-            <span class="kw">let</span> <span class="ident">beta</span> <span class="op">=</span> ((<span class="ident">alpha</span> <span class="op">-</span> <span class="ident">F</span>::<span class="ident">from</span>(<span class="number">2.</span>).<span class="ident">unwrap</span>())
-                        <span class="op">/</span> (<span class="ident">F</span>::<span class="ident">from</span>(<span class="number">2.</span>).<span class="ident">unwrap</span>()<span class="kw-2">*</span><span class="ident">a</span><span class="kw-2">*</span><span class="ident">b</span> <span class="op">-</span> <span class="ident">alpha</span>)).<span class="ident">sqrt</span>();
-            <span class="kw">let</span> <span class="ident">gamma</span> <span class="op">=</span> <span class="ident">a</span> <span class="op">+</span> <span class="ident">F</span>::<span class="ident">one</span>() <span class="op">/</span> <span class="ident">beta</span>;
+            <span class="kw">let</span> <span class="ident">beta</span> <span class="op">=</span> ((<span class="ident">alpha</span> <span class="op">-</span> <span class="ident">F::from</span>(<span class="number">2.</span>).<span class="ident">unwrap</span>())
+                        <span class="op">/</span> (<span class="ident">F::from</span>(<span class="number">2.</span>).<span class="ident">unwrap</span>()<span class="kw-2">*</span><span class="ident">a</span><span class="kw-2">*</span><span class="ident">b</span> <span class="op">-</span> <span class="ident">alpha</span>)).<span class="ident">sqrt</span>();
+            <span class="kw">let</span> <span class="ident">gamma</span> <span class="op">=</span> <span class="ident">a</span> <span class="op">+</span> <span class="ident">F::one</span>() <span class="op">/</span> <span class="ident">beta</span>;
 
             <span class="prelude-val">Ok</span>(<span class="ident">Beta</span> {
                 <span class="ident">a</span>, <span class="ident">b</span>, <span class="ident">switched_params</span>,
-                <span class="ident">algorithm</span>: <span class="ident">BetaAlgorithm</span>::<span class="ident">BB</span>(<span class="ident">BB</span> {
+                <span class="ident">algorithm</span>: <span class="ident">BetaAlgorithm::BB</span>(<span class="ident">BB</span> {
                     <span class="ident">alpha</span>, <span class="ident">beta</span>, <span class="ident">gamma</span>,
                 })
             })
@@ -1401,17 +1450,17 @@
             <span class="comment">// Here `a` is the maximum instead of the minimum.</span>
             <span class="kw">let</span> (<span class="ident">a</span>, <span class="ident">b</span>, <span class="ident">switched_params</span>) <span class="op">=</span> (<span class="ident">b</span>, <span class="ident">a</span>, <span class="op">!</span><span class="ident">switched_params</span>);
             <span class="kw">let</span> <span class="ident">alpha</span> <span class="op">=</span> <span class="ident">a</span> <span class="op">+</span> <span class="ident">b</span>;
-            <span class="kw">let</span> <span class="ident">beta</span> <span class="op">=</span> <span class="ident">F</span>::<span class="ident">one</span>() <span class="op">/</span> <span class="ident">b</span>;
-            <span class="kw">let</span> <span class="ident">delta</span> <span class="op">=</span> <span class="ident">F</span>::<span class="ident">one</span>() <span class="op">+</span> <span class="ident">a</span> <span class="op">-</span> <span class="ident">b</span>;
+            <span class="kw">let</span> <span class="ident">beta</span> <span class="op">=</span> <span class="ident">F::one</span>() <span class="op">/</span> <span class="ident">b</span>;
+            <span class="kw">let</span> <span class="ident">delta</span> <span class="op">=</span> <span class="ident">F::one</span>() <span class="op">+</span> <span class="ident">a</span> <span class="op">-</span> <span class="ident">b</span>;
             <span class="kw">let</span> <span class="ident">kappa1</span> <span class="op">=</span> <span class="ident">delta</span>
-                <span class="op">*</span> (<span class="ident">F</span>::<span class="ident">from</span>(<span class="number">1.</span> <span class="op">/</span> <span class="number">18.</span> <span class="op">/</span> <span class="number">4.</span>).<span class="ident">unwrap</span>() <span class="op">+</span> <span class="ident">F</span>::<span class="ident">from</span>(<span class="number">3.</span> <span class="op">/</span> <span class="number">18.</span> <span class="op">/</span> <span class="number">4.</span>).<span class="ident">unwrap</span>()<span class="kw-2">*</span><span class="ident">b</span>)
-                <span class="op">/</span> (<span class="ident">a</span><span class="kw-2">*</span><span class="ident">beta</span> <span class="op">-</span> <span class="ident">F</span>::<span class="ident">from</span>(<span class="number">14.</span> <span class="op">/</span> <span class="number">18.</span>).<span class="ident">unwrap</span>());
-            <span class="kw">let</span> <span class="ident">kappa2</span> <span class="op">=</span> <span class="ident">F</span>::<span class="ident">from</span>(<span class="number">0.25</span>).<span class="ident">unwrap</span>()
-                <span class="op">+</span> (<span class="ident">F</span>::<span class="ident">from</span>(<span class="number">0.5</span>).<span class="ident">unwrap</span>() <span class="op">+</span> <span class="ident">F</span>::<span class="ident">from</span>(<span class="number">0.25</span>).<span class="ident">unwrap</span>()<span class="op">/</span><span class="ident">delta</span>)<span class="kw-2">*</span><span class="ident">b</span>;
+                <span class="op">*</span> (<span class="ident">F::from</span>(<span class="number">1.</span> <span class="op">/</span> <span class="number">18.</span> <span class="op">/</span> <span class="number">4.</span>).<span class="ident">unwrap</span>() <span class="op">+</span> <span class="ident">F::from</span>(<span class="number">3.</span> <span class="op">/</span> <span class="number">18.</span> <span class="op">/</span> <span class="number">4.</span>).<span class="ident">unwrap</span>()<span class="kw-2">*</span><span class="ident">b</span>)
+                <span class="op">/</span> (<span class="ident">a</span><span class="kw-2">*</span><span class="ident">beta</span> <span class="op">-</span> <span class="ident">F::from</span>(<span class="number">14.</span> <span class="op">/</span> <span class="number">18.</span>).<span class="ident">unwrap</span>());
+            <span class="kw">let</span> <span class="ident">kappa2</span> <span class="op">=</span> <span class="ident">F::from</span>(<span class="number">0.25</span>).<span class="ident">unwrap</span>()
+                <span class="op">+</span> (<span class="ident">F::from</span>(<span class="number">0.5</span>).<span class="ident">unwrap</span>() <span class="op">+</span> <span class="ident">F::from</span>(<span class="number">0.25</span>).<span class="ident">unwrap</span>()<span class="op">/</span><span class="ident">delta</span>)<span class="kw-2">*</span><span class="ident">b</span>;
 
             <span class="prelude-val">Ok</span>(<span class="ident">Beta</span> {
                 <span class="ident">a</span>, <span class="ident">b</span>, <span class="ident">switched_params</span>,
-                <span class="ident">algorithm</span>: <span class="ident">BetaAlgorithm</span>::<span class="ident">BC</span>(<span class="ident">BC</span> {
+                <span class="ident">algorithm</span>: <span class="ident">BetaAlgorithm::BC</span>(<span class="ident">BC</span> {
                     <span class="ident">alpha</span>, <span class="ident">beta</span>, <span class="ident">delta</span>, <span class="ident">kappa1</span>, <span class="ident">kappa2</span>,
                 })
             })
@@ -1427,19 +1476,19 @@
     <span class="kw">fn</span> <span class="ident">sample</span><span class="op">&lt;</span><span class="ident">R</span>: <span class="ident">Rng</span> <span class="op">+</span> <span class="question-mark">?</span><span class="ident">Sized</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">rng</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">R</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">F</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">w</span>;
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">algorithm</span> {
-            <span class="ident">BetaAlgorithm</span>::<span class="ident">BB</span>(<span class="ident">algo</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">BetaAlgorithm::BB</span>(<span class="ident">algo</span>) <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="kw">loop</span> {
                     <span class="comment">// 1.</span>
                     <span class="kw">let</span> <span class="ident">u1</span> <span class="op">=</span> <span class="ident">rng</span>.<span class="ident">sample</span>(<span class="ident">Open01</span>);
                     <span class="kw">let</span> <span class="ident">u2</span> <span class="op">=</span> <span class="ident">rng</span>.<span class="ident">sample</span>(<span class="ident">Open01</span>);
-                    <span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">algo</span>.<span class="ident">beta</span> <span class="op">*</span> (<span class="ident">u1</span> <span class="op">/</span> (<span class="ident">F</span>::<span class="ident">one</span>() <span class="op">-</span> <span class="ident">u1</span>)).<span class="ident">ln</span>();
+                    <span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">algo</span>.<span class="ident">beta</span> <span class="op">*</span> (<span class="ident">u1</span> <span class="op">/</span> (<span class="ident">F::one</span>() <span class="op">-</span> <span class="ident">u1</span>)).<span class="ident">ln</span>();
                     <span class="ident">w</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">a</span> <span class="op">*</span> <span class="ident">v</span>.<span class="ident">exp</span>();
                     <span class="kw">let</span> <span class="ident">z</span> <span class="op">=</span> <span class="ident">u1</span><span class="kw-2">*</span><span class="ident">u1</span> <span class="op">*</span> <span class="ident">u2</span>;
-                    <span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> <span class="ident">algo</span>.<span class="ident">gamma</span> <span class="op">*</span> <span class="ident">v</span> <span class="op">-</span> <span class="ident">F</span>::<span class="ident">from</span>(<span class="number">4.</span>).<span class="ident">unwrap</span>().<span class="ident">ln</span>();
+                    <span class="kw">let</span> <span class="ident">r</span> <span class="op">=</span> <span class="ident">algo</span>.<span class="ident">gamma</span> <span class="op">*</span> <span class="ident">v</span> <span class="op">-</span> <span class="ident">F::from</span>(<span class="number">4.</span>).<span class="ident">unwrap</span>().<span class="ident">ln</span>();
                     <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">a</span> <span class="op">+</span> <span class="ident">r</span> <span class="op">-</span> <span class="ident">w</span>;
                     <span class="comment">// 2.</span>
-                    <span class="kw">if</span> <span class="ident">s</span> <span class="op">+</span> <span class="ident">F</span>::<span class="ident">one</span>() <span class="op">+</span> <span class="ident">F</span>::<span class="ident">from</span>(<span class="number">5.</span>).<span class="ident">unwrap</span>().<span class="ident">ln</span>()
-                        <span class="op">&gt;</span><span class="op">=</span> <span class="ident">F</span>::<span class="ident">from</span>(<span class="number">5.</span>).<span class="ident">unwrap</span>() <span class="op">*</span> <span class="ident">z</span> {
+                    <span class="kw">if</span> <span class="ident">s</span> <span class="op">+</span> <span class="ident">F::one</span>() <span class="op">+</span> <span class="ident">F::from</span>(<span class="number">5.</span>).<span class="ident">unwrap</span>().<span class="ident">ln</span>()
+                        <span class="op">&gt;</span><span class="op">=</span> <span class="ident">F::from</span>(<span class="number">5.</span>).<span class="ident">unwrap</span>() <span class="op">*</span> <span class="ident">z</span> {
                         <span class="kw">break</span>;
                     }
                     <span class="comment">// 3.</span>
@@ -1453,24 +1502,24 @@
                     }
                 }
             },
-            <span class="ident">BetaAlgorithm</span>::<span class="ident">BC</span>(<span class="ident">algo</span>) <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">BetaAlgorithm::BC</span>(<span class="ident">algo</span>) <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="kw">loop</span> {
                     <span class="kw">let</span> <span class="ident">z</span>;
                     <span class="comment">// 1.</span>
                     <span class="kw">let</span> <span class="ident">u1</span> <span class="op">=</span> <span class="ident">rng</span>.<span class="ident">sample</span>(<span class="ident">Open01</span>);
                     <span class="kw">let</span> <span class="ident">u2</span> <span class="op">=</span> <span class="ident">rng</span>.<span class="ident">sample</span>(<span class="ident">Open01</span>);
-                    <span class="kw">if</span> <span class="ident">u1</span> <span class="op">&lt;</span> <span class="ident">F</span>::<span class="ident">from</span>(<span class="number">0.5</span>).<span class="ident">unwrap</span>() {
+                    <span class="kw">if</span> <span class="ident">u1</span> <span class="op">&lt;</span> <span class="ident">F::from</span>(<span class="number">0.5</span>).<span class="ident">unwrap</span>() {
                         <span class="comment">// 2.</span>
                         <span class="kw">let</span> <span class="ident">y</span> <span class="op">=</span> <span class="ident">u1</span> <span class="op">*</span> <span class="ident">u2</span>;
                         <span class="ident">z</span> <span class="op">=</span> <span class="ident">u1</span> <span class="op">*</span> <span class="ident">y</span>;
-                        <span class="kw">if</span> <span class="ident">F</span>::<span class="ident">from</span>(<span class="number">0.25</span>).<span class="ident">unwrap</span>() <span class="op">*</span> <span class="ident">u2</span> <span class="op">+</span> <span class="ident">z</span> <span class="op">-</span> <span class="ident">y</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">algo</span>.<span class="ident">kappa1</span> {
+                        <span class="kw">if</span> <span class="ident">F::from</span>(<span class="number">0.25</span>).<span class="ident">unwrap</span>() <span class="op">*</span> <span class="ident">u2</span> <span class="op">+</span> <span class="ident">z</span> <span class="op">-</span> <span class="ident">y</span> <span class="op">&gt;</span><span class="op">=</span> <span class="ident">algo</span>.<span class="ident">kappa1</span> {
                             <span class="kw">continue</span>;
                         }
                     } <span class="kw">else</span> {
                         <span class="comment">// 3.</span>
                         <span class="ident">z</span> <span class="op">=</span> <span class="ident">u1</span> <span class="op">*</span> <span class="ident">u1</span> <span class="op">*</span> <span class="ident">u2</span>;
-                        <span class="kw">if</span> <span class="ident">z</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">F</span>::<span class="ident">from</span>(<span class="number">0.25</span>).<span class="ident">unwrap</span>() {
-                            <span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">algo</span>.<span class="ident">beta</span> <span class="op">*</span> (<span class="ident">u1</span> <span class="op">/</span> (<span class="ident">F</span>::<span class="ident">one</span>() <span class="op">-</span> <span class="ident">u1</span>)).<span class="ident">ln</span>();
+                        <span class="kw">if</span> <span class="ident">z</span> <span class="op">&lt;</span><span class="op">=</span> <span class="ident">F::from</span>(<span class="number">0.25</span>).<span class="ident">unwrap</span>() {
+                            <span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">algo</span>.<span class="ident">beta</span> <span class="op">*</span> (<span class="ident">u1</span> <span class="op">/</span> (<span class="ident">F::one</span>() <span class="op">-</span> <span class="ident">u1</span>)).<span class="ident">ln</span>();
                             <span class="ident">w</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">a</span> <span class="op">*</span> <span class="ident">v</span>.<span class="ident">exp</span>();
                             <span class="kw">break</span>;
                         }
@@ -1480,10 +1529,10 @@
                         }
                     }
                     <span class="comment">// 5.</span>
-                    <span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">algo</span>.<span class="ident">beta</span> <span class="op">*</span> (<span class="ident">u1</span> <span class="op">/</span> (<span class="ident">F</span>::<span class="ident">one</span>() <span class="op">-</span> <span class="ident">u1</span>)).<span class="ident">ln</span>();
+                    <span class="kw">let</span> <span class="ident">v</span> <span class="op">=</span> <span class="ident">algo</span>.<span class="ident">beta</span> <span class="op">*</span> (<span class="ident">u1</span> <span class="op">/</span> (<span class="ident">F::one</span>() <span class="op">-</span> <span class="ident">u1</span>)).<span class="ident">ln</span>();
                     <span class="ident">w</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">a</span> <span class="op">*</span> <span class="ident">v</span>.<span class="ident">exp</span>();
                     <span class="kw">if</span> <span class="op">!</span>(<span class="ident">algo</span>.<span class="ident">alpha</span> <span class="op">*</span> ((<span class="ident">algo</span>.<span class="ident">alpha</span> <span class="op">/</span> (<span class="self">self</span>.<span class="ident">b</span> <span class="op">+</span> <span class="ident">w</span>)).<span class="ident">ln</span>() <span class="op">+</span> <span class="ident">v</span>)
-                         <span class="op">-</span> <span class="ident">F</span>::<span class="ident">from</span>(<span class="number">4.</span>).<span class="ident">unwrap</span>().<span class="ident">ln</span>() <span class="op">&lt;</span> <span class="ident">z</span>.<span class="ident">ln</span>()) {
+                         <span class="op">-</span> <span class="ident">F::from</span>(<span class="number">4.</span>).<span class="ident">unwrap</span>().<span class="ident">ln</span>() <span class="op">&lt;</span> <span class="ident">z</span>.<span class="ident">ln</span>()) {
                         <span class="kw">break</span>;
                     };
                 }
@@ -1491,9 +1540,9 @@
         };
         <span class="comment">// 5. for BB, 6. for BC</span>
         <span class="kw">if</span> <span class="op">!</span><span class="self">self</span>.<span class="ident">switched_params</span> {
-            <span class="kw">if</span> <span class="ident">w</span> <span class="op">=</span><span class="op">=</span> <span class="ident">F</span>::<span class="ident">infinity</span>() {
+            <span class="kw">if</span> <span class="ident">w</span> <span class="op">=</span><span class="op">=</span> <span class="ident">F::infinity</span>() {
                 <span class="comment">// Assuming `b` is finite, for large `w`:</span>
-                <span class="kw">return</span> <span class="ident">F</span>::<span class="ident">one</span>();
+                <span class="kw">return</span> <span class="ident">F::one</span>();
             }
             <span class="ident">w</span> <span class="op">/</span> (<span class="self">self</span>.<span class="ident">b</span> <span class="op">+</span> <span class="ident">w</span>)
         } <span class="kw">else</span> {
@@ -1508,24 +1557,24 @@
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_chi_squared_one</span>() {
-        <span class="kw">let</span> <span class="ident">chi</span> <span class="op">=</span> <span class="ident">ChiSquared</span>::<span class="ident">new</span>(<span class="number">1.0</span>).<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rng</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">test</span>::<span class="ident">rng</span>(<span class="number">201</span>);
+        <span class="kw">let</span> <span class="ident">chi</span> <span class="op">=</span> <span class="ident">ChiSquared::new</span>(<span class="number">1.0</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rng</span> <span class="op">=</span> <span class="kw">crate</span><span class="ident">::test::rng</span>(<span class="number">201</span>);
         <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">1000</span> {
             <span class="ident">chi</span>.<span class="ident">sample</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rng</span>);
         }
     }
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_chi_squared_small</span>() {
-        <span class="kw">let</span> <span class="ident">chi</span> <span class="op">=</span> <span class="ident">ChiSquared</span>::<span class="ident">new</span>(<span class="number">0.5</span>).<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rng</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">test</span>::<span class="ident">rng</span>(<span class="number">202</span>);
+        <span class="kw">let</span> <span class="ident">chi</span> <span class="op">=</span> <span class="ident">ChiSquared::new</span>(<span class="number">0.5</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rng</span> <span class="op">=</span> <span class="kw">crate</span><span class="ident">::test::rng</span>(<span class="number">202</span>);
         <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">1000</span> {
             <span class="ident">chi</span>.<span class="ident">sample</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rng</span>);
         }
     }
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_chi_squared_large</span>() {
-        <span class="kw">let</span> <span class="ident">chi</span> <span class="op">=</span> <span class="ident">ChiSquared</span>::<span class="ident">new</span>(<span class="number">30.0</span>).<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rng</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">test</span>::<span class="ident">rng</span>(<span class="number">203</span>);
+        <span class="kw">let</span> <span class="ident">chi</span> <span class="op">=</span> <span class="ident">ChiSquared::new</span>(<span class="number">30.0</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rng</span> <span class="op">=</span> <span class="kw">crate</span><span class="ident">::test::rng</span>(<span class="number">203</span>);
         <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">1000</span> {
             <span class="ident">chi</span>.<span class="ident">sample</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rng</span>);
         }
@@ -1533,13 +1582,13 @@
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="attribute">#[<span class="ident">should_panic</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_chi_squared_invalid_dof</span>() {
-        <span class="ident">ChiSquared</span>::<span class="ident">new</span>(<span class="op">-</span><span class="number">1.0</span>).<span class="ident">unwrap</span>();
+        <span class="ident">ChiSquared::new</span>(<span class="op">-</span><span class="number">1.0</span>).<span class="ident">unwrap</span>();
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_f</span>() {
-        <span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="ident">FisherF</span>::<span class="ident">new</span>(<span class="number">2.0</span>, <span class="number">32.0</span>).<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rng</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">test</span>::<span class="ident">rng</span>(<span class="number">204</span>);
+        <span class="kw">let</span> <span class="ident">f</span> <span class="op">=</span> <span class="ident">FisherF::new</span>(<span class="number">2.0</span>, <span class="number">32.0</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rng</span> <span class="op">=</span> <span class="kw">crate</span><span class="ident">::test::rng</span>(<span class="number">204</span>);
         <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">1000</span> {
             <span class="ident">f</span>.<span class="ident">sample</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rng</span>);
         }
@@ -1547,8 +1596,8 @@
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_t</span>() {
-        <span class="kw">let</span> <span class="ident">t</span> <span class="op">=</span> <span class="ident">StudentT</span>::<span class="ident">new</span>(<span class="number">11.0</span>).<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rng</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">test</span>::<span class="ident">rng</span>(<span class="number">205</span>);
+        <span class="kw">let</span> <span class="ident">t</span> <span class="op">=</span> <span class="ident">StudentT::new</span>(<span class="number">11.0</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rng</span> <span class="op">=</span> <span class="kw">crate</span><span class="ident">::test::rng</span>(<span class="number">205</span>);
         <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">1000</span> {
             <span class="ident">t</span>.<span class="ident">sample</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rng</span>);
         }
@@ -1556,8 +1605,8 @@
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_beta</span>() {
-        <span class="kw">let</span> <span class="ident">beta</span> <span class="op">=</span> <span class="ident">Beta</span>::<span class="ident">new</span>(<span class="number">1.0</span>, <span class="number">2.0</span>).<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rng</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">test</span>::<span class="ident">rng</span>(<span class="number">201</span>);
+        <span class="kw">let</span> <span class="ident">beta</span> <span class="op">=</span> <span class="ident">Beta::new</span>(<span class="number">1.0</span>, <span class="number">2.0</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rng</span> <span class="op">=</span> <span class="kw">crate</span><span class="ident">::test::rng</span>(<span class="number">201</span>);
         <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">1000</span> {
             <span class="ident">beta</span>.<span class="ident">sample</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rng</span>);
         }
@@ -1566,17 +1615,19 @@
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="attribute">#[<span class="ident">should_panic</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_beta_invalid_dof</span>() {
-        <span class="ident">Beta</span>::<span class="ident">new</span>(<span class="number">0.</span>, <span class="number">0.</span>).<span class="ident">unwrap</span>();
+        <span class="ident">Beta::new</span>(<span class="number">0.</span>, <span class="number">0.</span>).<span class="ident">unwrap</span>();
     }
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_beta_small_param</span>() {
-        <span class="kw">let</span> <span class="ident">beta</span> <span class="op">=</span> <span class="ident">Beta</span>::<span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>::<span class="ident">new</span>(<span class="number">1e-3</span>, <span class="number">1e-3</span>).<span class="ident">unwrap</span>();
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rng</span> <span class="op">=</span> <span class="kw">crate</span>::<span class="ident">test</span>::<span class="ident">rng</span>(<span class="number">206</span>);
+        <span class="kw">let</span> <span class="ident">beta</span> <span class="op">=</span> <span class="ident">Beta</span>::<span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span><span class="ident">::new</span>(<span class="number">1e-3</span>, <span class="number">1e-3</span>).<span class="ident">unwrap</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rng</span> <span class="op">=</span> <span class="kw">crate</span><span class="ident">::test::rng</span>(<span class="number">206</span>);
         <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">1000</span> {
-            <span class="macro">assert</span><span class="macro">!</span>(<span class="op">!</span><span class="ident">beta</span>.<span class="ident">sample</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rng</span>).<span class="ident">is_nan</span>(), <span class="string">&quot;failed at i={}&quot;</span>, <span class="ident">i</span>);
+            <span class="macro">assert!</span>(<span class="op">!</span><span class="ident">beta</span>.<span class="ident">sample</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rng</span>).<span class="ident">is_nan</span>(), <span class="string">&quot;failed at i={}&quot;</span>, <span class="ident">i</span>);
         }
     }
 }
 </pre></div>
-</section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "rand_distr";</script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>
+</section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../" data-current-crate="rand_distr" data-search-index-js="../../search-index.js" data-search-js="../../search.js"></div>
+    <script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script>
+</body></html>
